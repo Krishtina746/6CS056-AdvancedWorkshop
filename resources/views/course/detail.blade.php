@@ -1,27 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Course Details</title>
-</head>
-<body>
 
-<h1>Course Details</h1>
+<x-layout title="Course Details">
 
-@if(session('success'))
-    <p style="color: green;">{{ session('success') }}</p>
-@endif
+    <h1>Course Details</h1>
 
-<p><strong>ID:</strong> {{ $course->id }}</p>
-<p><strong>Name:</strong> {{ $course->name }}</p>
-<p><strong>Description:</strong> {{ $course->description }}</p>
-<p><strong>Duration:</strong> {{ $course->duration }} weeks</p>
-<p><strong>Fee:</strong> {{ $course->fee }}</p>
-<p><strong>Difficulty:</strong> {{ $course->difficulty }}</p>
-<p><strong>Active:</strong> {{ $course->is_active ? 'Yes' : 'No' }}</p>
+    <p><strong>ID:</strong> {{ $course->id }}</p>
 
-<a href="/courses/{{ $course->id }}/edit">Edit Course</a>
-<br>
-<a href="/courses">Back to Courses</a>
+    <p><strong>Name:</strong> {{ $course->name }}</p>
 
-</body>
-</html>
+    <p><strong>Description:</strong> {{ $course->description }}</p>
+
+    <p><strong>Duration:</strong> {{ $course->duration }} weeks</p>
+
+    <p><strong>Fee:</strong> {{ $course->fee }}</p>
+
+    <p><strong>Difficulty:</strong> {{ $course->difficulty }}</p>
+
+    <p><strong>Active:</strong>
+        {{ $course->is_active ? 'Yes' : 'No' }}
+    </p>
+
+    <a href="{{ route('courses.edit', $course) }}" class="btn">
+        Edit Course
+    </a>
+
+    <a href="{{ route('courses.index') }}">
+        Back to Courses
+    </a>
+
+</x-layout>
