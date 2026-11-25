@@ -3,38 +3,37 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreStudentRequest;
+use App\Http\Requests\UpdateStudentRequest;
+use App\Http\Resources\StudentResource;
 use App\Models\Student;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class StudentController extends Controller
 {
     public function index()
     {
-        return response()->json(Student::all());
+        return StudentResource::collection(Student::all());
     }
 
-    public function store(Request $request)
+    public function store(StoreStudentRequest $request)
     {
-        $validated = $request->validate($this->rules());
+        $student = Student::create($request->validated());
 
-        $student = Student::create($validated);
-
-        return response()->json($student, 201);
+        return (new StudentResource($student))
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function show(Student $student)
     {
-        return response()->json($student);
+        return new StudentResource($student);
     }
 
-    public function update(Request $request, Student $student)
+    public function update(UpdateStudentRequest $request, Student $student)
     {
-        $validated = $request->validate($this->rules($student));
+        $student->update($request->validated());
 
-        $student->update($validated);
-
-        return response()->json($student);
+        return new StudentResource($student);
     }
 
     public function destroy(Student $student)
@@ -44,20 +43,5 @@ class StudentController extends Controller
         return response()->json([
             'message' => 'Student deleted successfully.'
         ]);
-    }
-
-    private function rules(?Student $student = null): array
-    {
-        return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('students')->ignore($student?->id),
-            ],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'address' => ['nullable', 'string'],
-            'date_of_birth' => ['nullable', 'date'],
-        ];
     }
 }
